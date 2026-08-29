@@ -46,6 +46,7 @@ class ReportManager:
             },
             "issues": issues,
             "recommendations": recommendations,
+            "images": vision_report.get("images", []),
             "metadata": {
                 "paragraphs_analyzed": len(
                     article.paragraphs
