@@ -1,0 +1,222 @@
+@import 'tailwindcss';
+
+:root {
+  --bg: #100f0e;
+  --bg-elevated: #181615;
+  --surface: rgba(243, 242, 242, 0.04);
+  --surface-hover: rgba(243, 242, 242, 0.07);
+  --border: rgba(243, 242, 242, 0.1);
+  --border-strong: rgba(243, 242, 242, 0.18);
+
+  --text-primary: #f3f2f2;
+  --text-secondary: #a8a29c;
+  --text-tertiary: #6e6863;
+
+  --ink: #201e1d;
+  --paper: #f3f2f2;
+
+  --accent: #0088b0;
+  --accent-strong: #22b6db;
+  --accent-soft: rgba(0, 136, 176, 0.16);
+  --accent-2: #d6006c;
+  --accent-2-strong: #ff4fa0;
+  --accent-2-soft: rgba(214, 0, 108, 0.16);
+
+  --severity-high: #fb7185;
+  --severity-high-soft: rgba(251, 113, 133, 0.14);
+  --severity-medium: #fbbf24;
+  --severity-medium-soft: rgba(251, 191, 36, 0.14);
+  --severity-low: #a8a29c;
+  --severity-low-soft: rgba(168, 162, 156, 0.14);
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: radial-gradient(ellipse 80% 60% at 50% -10%, rgba(0, 136, 176, 0.12), transparent), var(--bg);
+  background-attachment: fixed;
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  font-family: inherit;
+}
+
+.panel {
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  border-radius: 1.1rem;
+  background: var(--surface);
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0 0 1.1rem;
+}
+
+.panel-header h3 {
+  margin: 0;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.35rem;
+  height: 1.35rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: var(--surface-hover);
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.empty-state {
+  margin: 0;
+  padding: 1rem 0 0.25rem;
+  color: var(--text-tertiary);
+  font-size: 0.88rem;
+}
+
+.analysis-body {
+  color: var(--text-secondary);
+  font-size: 0.92rem;
+  line-height: 1.65;
+  overflow-x: auto;
+}
+
+.analysis-body h2 {
+  margin: 1.5rem 0 0.6rem;
+  font-family: 'Inter Tight', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.analysis-body h2:first-child {
+  margin-top: 0;
+}
+
+.analysis-body h3 {
+  margin: 1.1rem 0 0.4rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.analysis-body p {
+  margin: 0 0 0.75rem;
+}
+
+.analysis-body ul,
+.analysis-body ol {
+  margin: 0 0 0.9rem;
+  padding-left: 1.3rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.analysis-body strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.analysis-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.25rem 0;
+}
+
+.analysis-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0 0 1.1rem;
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.analysis-body th,
+.analysis-body td {
+  text-align: left;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--border);
+  vertical-align: top;
+}
+
+.analysis-body th {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.analysis-body code {
+  background: var(--surface-hover);
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.35rem;
+  font-size: 0.85em;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

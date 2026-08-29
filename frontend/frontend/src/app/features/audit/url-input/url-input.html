@@ -1,0 +1,51 @@
+<section class="hero">
+  <p class="eyebrow">Automated inclusion &amp; bias audit</p>
+  <h1>Is your article inclusive?</h1>
+  <p class="lede">
+    Paste a link to a news article. We scrape it, scan the language for gendered or exclusionary
+    wording, check whether images fairly represent people, and hand you a scored, actionable report.
+  </p>
+
+  <form class="input-card" (ngSubmit)="submit()" #form="ngForm">
+    <svg class="input-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M13.828 10.172a4 4 0 0 1 0 5.656l-3 3a4 4 0 1 1-5.656-5.656l1.5-1.5M10.172 13.828a4 4 0 0 1 0-5.656l3-3a4 4 0 1 1 5.656 5.656l-1.5 1.5"
+        stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+
+    <input
+      type="url"
+      name="articleUrl"
+      class="url-field"
+      placeholder="https://example.com/news/article"
+      autocomplete="off"
+      spellcheck="false"
+      [ngModel]="url()"
+      (ngModelChange)="url.set($event)"
+      [disabled]="api.loading()"
+    />
+
+    <button type="submit" class="submit-btn" [disabled]="api.loading()">
+      @if (api.loading()) {
+        <span class="btn-spinner" aria-hidden="true"></span>
+        <span>Analyzing…</span>
+      } @else {
+        <span>Run audit</span>
+      }
+    </button>
+  </form>
+
+  @if (validationError()) {
+    <p class="field-error">{{ validationError() }}</p>
+  } @else if (api.error()) {
+    <p class="field-error">{{ api.error() }}</p>
+  }
+
+  @if (!api.loading() && !api.report()) {
+    <div class="samples">
+      <span>Try:</span>
+      <button type="button" (click)="fillSample('https://www.bbc.com/news')">bbc.com/news</button>
+      <button type="button" (click)="fillSample('https://www.reuters.com')">reuters.com</button>
+    </div>
+  }
+</section>

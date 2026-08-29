@@ -1,0 +1,52 @@
+<section class="panel">
+  <header class="panel-header">
+    <h3>Visual representation</h3>
+    <span class="count-badge">{{ images().length }}</span>
+  </header>
+
+  @if (images().length === 0) {
+    <p class="empty-state">No article images were available for visual analysis.</p>
+  } @else {
+    <p class="summary-line">
+      {{ withPeopleCount() }} of {{ images().length }} analyzed images show visible people.
+    </p>
+
+    <div class="image-grid">
+      @for (image of images(); track image.image_id; let i = $index) {
+        <figure class="image-card" [style.animation-delay.ms]="i * 45">
+          @if (!brokenIds().has(image.image_id)) {
+            <img
+              [src]="image.image_url"
+              [alt]="image.alt || 'Article image'"
+              loading="lazy"
+              (error)="markBroken(image.image_id)"
+            />
+          } @else {
+            <div class="image-fallback" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none">
+                <path
+                  d="M4 16.5 8.5 12l3 3L16 10.5 20 15M4 6h16v13a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6Z"
+                  stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+              </svg>
+            </div>
+          }
+
+          <div class="image-overlay">
+            <div class="chip-row">
+              <span class="chip" [class.chip-active]="image.people_count > 0">
+                {{ image.people_count }} {{ image.people_count === 1 ? 'person' : 'people' }}
+              </span>
+              @if (image.people_count > 0) {
+                <span class="chip">{{ prominencePercent(image) }}% prominence</span>
+              }
+              <span class="chip">Quality {{ image.image_quality }}</span>
+            </div>
+            @if (image.alt) {
+              <figcaption>{{ image.alt }}</figcaption>
+            }
+          </div>
+        </figure>
+      }
+    </div>
+  }
+</section>

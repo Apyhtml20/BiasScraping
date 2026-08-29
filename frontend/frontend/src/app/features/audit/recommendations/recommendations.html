@@ -1,0 +1,24 @@
+<section class="panel">
+  <header class="panel-header">
+    <h3>Recommendations</h3>
+    <span class="count-badge">{{ recommendations().length }}</span>
+  </header>
+
+  @if (recommendations().length === 0) {
+    <p class="empty-state">No specific action items — the article looks solid on both fronts.</p>
+  } @else {
+    <ul class="rec-list">
+      @for (rec of recommendations(); track rec.type + rec.module; let i = $index) {
+        <li class="rec-item" [style.animation-delay.ms]="i * 45">
+          <svg class="rec-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <div>
+            <span class="rec-module">{{ rec.module === 'nlp' ? 'Language' : 'Visuals' }}</span>
+            <p class="rec-message">{{ rec.message }}</p>
+          </div>
+        </li>
+      }
+    </ul>
+  }
+</section>

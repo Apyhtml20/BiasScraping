@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48" role="img" aria-label="BiasScraping">
+  <g transform="translate(4,0) skewX(-10)">
+    <rect x="4" y="8" width="34" height="5" fill="#f3f2f2"></rect>
+    <rect x="4" y="18" width="26" height="5" fill="#f3f2f2"></rect>
+    <rect x="4" y="28" width="30" height="5" fill="#0088b0"></rect>
+    <rect x="4" y="38" width="18" height="5" fill="#f3f2f2"></rect>
+  </g>
+</svg>

@@ -1,0 +1,27 @@
+<section class="panel">
+  <header class="panel-header">
+    <h3>Language analysis</h3>
+    <span class="count-badge">{{ nlpIssues().length }}</span>
+  </header>
+
+  @if (nlpIssues().length === 0) {
+    <p class="empty-state">No gendered, stereotyped, or exclusionary language detected.</p>
+  } @else {
+    <ul class="issue-list">
+      @for (issue of nlpIssues(); track issue.paragraph_id ?? issue.text; let i = $index) {
+        <li class="issue-card" [attr.data-severity]="issue.severity" [style.animation-delay.ms]="i * 45">
+          <div class="issue-top">
+            <span class="severity-badge" [attr.data-severity]="issue.severity">{{ issue.severity }}</span>
+            <span class="issue-type">{{ typeLabel(issue.type) }}</span>
+            @if (issue.confidence !== undefined) {
+              <span class="confidence">{{ (issue.confidence * 100) | number: '1.0-0' }}% confidence</span>
+            }
+          </div>
+          @if (issue.text) {
+            <p class="issue-text">&ldquo;{{ issue.text }}&rdquo;</p>
+          }
+        </li>
+      }
+    </ul>
+  }
+</section>

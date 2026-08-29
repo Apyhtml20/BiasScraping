@@ -1,0 +1,27 @@
+<app-url-input />
+
+<div class="results-shell">
+  @if (api.loading()) {
+    <app-audit-progress />
+  } @else if (api.report(); as report) {
+    <div class="results">
+      <app-score-card [report]="report" />
+
+      <div class="results-grid">
+        <app-nlp-results [issues]="report.issues" />
+        <app-vision-results [images]="report.images" />
+      </div>
+
+      @if (report.agent_analysis) {
+        <section class="panel analysis-panel">
+          <header class="panel-header">
+            <h3>AI orchestrator summary</h3>
+          </header>
+          <div class="analysis-body" [innerHTML]="report.agent_analysis | markdown"></div>
+        </section>
+      }
+
+      <app-recommendations [recommendations]="report.recommendations" />
+    </div>
+  }
+</div>

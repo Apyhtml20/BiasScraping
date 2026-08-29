@@ -1,0 +1,59 @@
+.shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.topbar-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 1.1rem 1.5rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.85rem;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: var(--text-primary);
+}
+
+.nav-brand img {
+  display: block;
+  flex-shrink: 0;
+}
+
+.nav-brand span {
+  font-family: 'Inter Tight', sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  letter-spacing: -0.01em;
+}
+
+.nav-brand .accent {
+  color: var(--accent-strong);
+}
+
+.brand-tag {
+  color: var(--text-tertiary);
+  font-size: 0.82rem;
+}
+
+@media (max-width: 720px) {
+  .brand-tag {
+    display: none;
+  }
+}

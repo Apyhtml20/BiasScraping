@@ -1,0 +1,50 @@
+@if (report(); as r) {
+  <section class="score-card" [attr.data-tier]="tier()">
+    <div class="ring-wrap">
+      <svg viewBox="0 0 120 120" class="ring">
+        <circle class="ring-track" cx="60" cy="60" r="54" />
+        <circle
+          class="ring-value"
+          cx="60"
+          cy="60"
+          r="54"
+          [style.stroke-dasharray.px]="circumference"
+          [style.stroke-dashoffset.px]="ringOffset()"
+        />
+      </svg>
+      <div class="ring-label">
+        <span class="ring-score">{{ animatedScore() }}</span>
+        <span class="ring-max">/100</span>
+      </div>
+    </div>
+
+    <div class="score-meta">
+      <p class="tier-label">{{ tierLabel() }}</p>
+      <h2 class="article-title">{{ r.title || 'Untitled article' }}</h2>
+      <a class="article-url" [href]="r.url" target="_blank" rel="noopener">{{ r.url }}</a>
+
+      <div class="sub-scores">
+        <div class="sub-score">
+          <div class="sub-score-bar">
+            <div class="sub-score-fill nlp" [style.width.%]="r.summary.nlp_score"></div>
+          </div>
+          <span>Language {{ r.summary.nlp_score }}</span>
+        </div>
+        <div class="sub-score">
+          <div class="sub-score-bar">
+            <div class="sub-score-fill vision" [style.width.%]="r.summary.vision_score"></div>
+          </div>
+          <span>Visuals {{ r.summary.vision_score }}</span>
+        </div>
+      </div>
+
+      <div class="stat-row">
+        <span>{{ r.summary.total_issues }} issue{{ r.summary.total_issues === 1 ? '' : 's' }} found</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span>{{ r.metadata.paragraphs_analyzed }} paragraphs analyzed</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span>{{ r.metadata.images_analyzed }}/{{ r.metadata.images_found }} images analyzed</span>
+      </div>
+    </div>
+  </section>
+}

@@ -1,0 +1,75 @@
+.issue-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.issue-card {
+  padding: 0.9rem 1rem;
+  border-radius: 0.8rem;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--severity-low);
+  background: var(--bg-elevated);
+  animation: fade-in-up 320ms var(--ease-out) both;
+}
+
+.issue-card[data-severity='high'] {
+  border-left-color: var(--severity-high);
+}
+
+.issue-card[data-severity='medium'] {
+  border-left-color: var(--severity-medium);
+}
+
+.issue-top {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 0.4rem;
+}
+
+.severity-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.18rem 0.5rem;
+  border-radius: 999px;
+  background: var(--severity-low-soft);
+  color: var(--severity-low);
+}
+
+.severity-badge[data-severity='high'] {
+  background: var(--severity-high-soft);
+  color: var(--severity-high);
+}
+
+.severity-badge[data-severity='medium'] {
+  background: var(--severity-medium-soft);
+  color: var(--severity-medium);
+}
+
+.issue-type {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-transform: capitalize;
+}
+
+.confidence {
+  margin-left: auto;
+  font-size: 0.76rem;
+  color: var(--text-tertiary);
+}
+
+.issue-text {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+  font-style: italic;
+}

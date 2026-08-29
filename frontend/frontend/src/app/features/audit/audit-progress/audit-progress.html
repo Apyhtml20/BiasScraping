@@ -1,0 +1,15 @@
+<section class="progress-panel" aria-live="polite">
+  <div class="orbit" aria-hidden="true">
+    <span class="orbit-core"></span>
+    <span class="orbit-ring"></span>
+  </div>
+
+  <p class="phase-text">{{ api.phases[api.phaseIndex()] }}</p>
+  <p class="phase-hint">First run can take a little longer while the models warm up.</p>
+
+  <div class="skeleton-grid">
+    @for (i of [0, 1, 2]; track i) {
+      <div class="skeleton-card" [style.animation-delay.ms]="i * 90"></div>
+    }
+  </div>
+</section>
