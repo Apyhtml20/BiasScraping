@@ -1,0 +1,12 @@
+.venv
+__pycache__
+**/__pycache__
+*.pyc
+*.pt
+.git
+.gitignore
+frontend
+.claude-plugin-skill-frontend
+photo_for_readme
+docs_architecture
+*.md

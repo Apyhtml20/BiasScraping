@@ -8,7 +8,11 @@ Paste a news article URL and get an automated inclusivity audit: gendered or exc
 language flagged in the text, visual representation checked in the images, and everything
 summarized into a scored report by an LLM.
 
-![BiasScraping — audit landing page](photo_for_readme/image.png)
+![BiasScraping — audit landing page](photo_for_readme/landing-page.png)
+
+![BiasScraping — score, language and visual analysis](photo_for_readme/results-audit.png)
+
+![BiasScraping — AI orchestrator summary](photo_for_readme/results-summary.png)
 
 ## How it works
 
@@ -105,6 +109,31 @@ app/                      FastAPI backend
 
 frontend/frontend/        Angular app (see its own README for CLI details)
 ```
+
+## Running with Docker
+
+```bash
+cp app/orchestrator/.env.example app/orchestrator/.env
+# edit app/orchestrator/.env and set NVIDIA_API_KEY=<your key>
+
+docker compose up --build
+```
+
+- Frontend (nginx, static build): `http://localhost`
+- Backend (FastAPI): `http://localhost:8000`
+
+The frontend container proxies `/api/*` to the backend container over the Docker network
+(see `frontend/frontend/nginx.conf`), so the browser only ever talks to one origin.
+
+The bias classifier model (`facebook/bart-large-mnli`, ~1.6 GB) is cached in a named volume
+(`hf-cache`) so it's only downloaded once, on the first `/api/audit` call, not on every
+container restart.
+
+## Documentation
+
+- [`docs_architecture/achitecture.md`](docs_architecture/achitecture.md) — request lifecycle, module responsibilities, deployment
+- [`docs_architecture/api.md`](docs_architecture/api.md) — full `POST /api/audit` request/response reference
+- [`docs_architecture/ml_pipelines.md`](docs_architecture/ml_pipelines.md) — NLP classifier, vision pipeline, and LLM step details
 
 ## Configuration notes
 
