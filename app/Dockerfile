@@ -10,16 +10,28 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
 
 WORKDIR /srv
 
-# CPU-only torch build - this image has no GPU, and the CUDA wheels add several GB for nothing
-ENV UV_TORCH_BACKEND=cpu
+# This image has no GPU: skip torch's CUDA wheel + its nvidia-*/triton
+# dependencies (several GB, otherwise pulled in unconditionally by uv.lock)
+# and install the CPU-only build instead.
+ARG SKIP_CUDA="--no-install-package torch --no-install-package torchvision \
+    --no-install-package triton --no-install-package nvidia-cublas \
+    --no-install-package nvidia-cuda-cupti --no-install-package nvidia-cuda-nvrtc \
+    --no-install-package nvidia-cuda-runtime --no-install-package nvidia-cudnn-cu13 \
+    --no-install-package nvidia-cufft --no-install-package nvidia-cufile \
+    --no-install-package nvidia-curand --no-install-package nvidia-cusolver \
+    --no-install-package nvidia-cusparse --no-install-package nvidia-cusparselt-cu13 \
+    --no-install-package nvidia-ml-py --no-install-package nvidia-nccl-cu13 \
+    --no-install-package nvidia-nvjitlink --no-install-package nvidia-nvshmem-cu13 \
+    --no-install-package nvidia-nvtx"
 
 # Install dependencies first so this layer is cached across source changes
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project --no-dev
+RUN uv sync --frozen --no-install-project --no-dev $SKIP_CUDA \
+    && uv pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
 
 COPY app ./app
 
-RUN uv sync --frozen --no-dev
+RUN uv sync --frozen --no-dev $SKIP_CUDA
 
 EXPOSE 8000
 
