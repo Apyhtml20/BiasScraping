@@ -10,6 +10,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /usr/local/bin/
 
 WORKDIR /srv
 
+# CPU-only torch build - this image has no GPU, and the CUDA wheels add several GB for nothing
+ENV UV_TORCH_BACKEND=cpu
+
 # Install dependencies first so this layer is cached across source changes
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-install-project --no-dev
