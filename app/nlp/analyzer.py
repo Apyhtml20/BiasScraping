@@ -2,6 +2,8 @@ from app.scraping_system.article_extractor import Article
 from app.nlp.preprocessing import TextPreprocessor
 from app.nlp.classifier import BiasClassifier
 
+MIN_CONFIDENCE = 0.5
+
 class NLPAnalyzer:
     def __init__(self):
         self.preprocessor = TextPreprocessor()
@@ -18,7 +20,10 @@ class NLPAnalyzer:
 
             result = self.classifier.classify(text)
 
-            if result["label"] != "neutral_inclusive":
+            if (
+                result["label"] != "neutral_inclusive"
+                and result["confidence"] >= MIN_CONFIDENCE
+            ):
                 issues.append({
                     "paragraph_id": paragraph.id,
                     "text": text,
