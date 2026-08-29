@@ -2,7 +2,7 @@
   <img src="frontend/frontend/public/logos/bias-plate.svg" width="64" height="64" alt="BiasScraping logo">
 </p>
 
-# BiasScraping — AI for Inclusion Auditor
+# BiasScraping
 
 Paste a news article URL and get an automated inclusivity audit: gendered or exclusionary
 language flagged in the text, visual representation checked in the images, and everything
