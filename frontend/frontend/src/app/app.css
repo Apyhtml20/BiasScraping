@@ -19,8 +19,7 @@
   margin: 0 auto;
   padding: 1.1rem 1.5rem;
   display: flex;
-  align-items: baseline;
-  gap: 0.85rem;
+  align-items: center;
 }
 
 .nav-brand {
@@ -45,15 +44,4 @@
 
 .nav-brand .accent {
   color: var(--accent-strong);
-}
-
-.brand-tag {
-  color: var(--text-tertiary);
-  font-size: 0.82rem;
-}
-
-@media (max-width: 720px) {
-  .brand-tag {
-    display: none;
-  }
 }
