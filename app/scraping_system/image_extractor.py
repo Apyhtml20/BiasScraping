@@ -41,7 +41,11 @@ def extract_images(html: str, url: str):
         img_tags = container.find_all("img")
     else:
         all_imgs = original_soup.find_all("img")
-        by_src = {img.get("src"): img for img in all_imgs if img.get("src")}
+        by_src = {
+            urljoin(url, img.get("src")): img
+            for img in all_imgs
+            if img.get("src")
+        }
         img_tags = [by_src[src] for src in content_srcs if src in by_src]
 
     seen: set[str] = set()

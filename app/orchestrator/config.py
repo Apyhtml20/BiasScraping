@@ -11,7 +11,7 @@ class LLMConfig:
     def __init__(self):
         self.api_key = os.getenv("NVIDIA_API_KEY")
         self.base_url = "https://integrate.api.nvidia.com/v1"
-        self.model = "openai/gpt-oss-20b"
+        self.model = "nvidia/nemotron-3-nano-30b-a3b"
 
         if not self.api_key:
             raise ValueError(
