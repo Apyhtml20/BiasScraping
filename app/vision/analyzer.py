@@ -1,6 +1,6 @@
 import asyncio
 
-from app.models.article import Article
+from app.scraping_system.article_extractor import Article
 from app.vision.preprocessing import ImagePreprocessor
 from app.vision.classical_cv import ClassicalCVAnalyzer
 from app.vision.yolo_detector import YOLODetector

@@ -15,8 +15,8 @@ class VisionFusion:
         for person in people:
             bbox = person["bbox"]
 
-            person_width = bbox["x2"] - bbox["x1"]
-            person_height = bbox["y2"] - bbox["y1"]
+            person_width = bbox[2] - bbox[0]
+            person_height = bbox[3] - bbox[1]
 
             person_area = max(0, person_width * person_height)
             total_people_area += person_area

@@ -1,6 +1,6 @@
 import uuid
 
-from app.models.article import Article
+from app.scraping_system.article_extractor import Article
 from app.reports.scoring import InclusivityScorer
 from app.reports.recommendations import RecommendationEngine
 

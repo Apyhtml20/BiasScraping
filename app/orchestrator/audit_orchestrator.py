@@ -1,26 +1,27 @@
 import asyncio
 import json
-import os
+from pathlib import Path
 
-from openai import OpenAI
-
-from app.scraping_system.scraper import ArticleScraper
 from app.nlp.analyzer import NLPAnalyzer
-from app.vision.analyzer import VisionAnalyzer
+from app.orchestrator.config import LLMConfig
 from app.reports.report_manager import ReportManager
+from app.scraping_system.scraper import ArticleScraper
+from app.vision.analyzer import VisionAnalyzer
 
 
 class AuditOrchestrator:
     def __init__(self):
-        self.client = OpenAI(
-            base_url="https://integrate.api.nvidia.com/v1",
-            api_key=os.getenv("NVIDIA_API_KEY")
-        )
+        llm_config = LLMConfig()
+
+        self.client = llm_config.create_client()
+        self.model = llm_config.model
 
         self.scraper = ArticleScraper()
         self.nlp_analyzer = NLPAnalyzer()
         self.vision_analyzer = VisionAnalyzer()
         self.report_manager = ReportManager()
+
+        self.system_prompt = self._load_system_prompt()
 
     async def audit(self, url: str) -> dict:
         article = await self.scraper.scrape(url)
@@ -30,34 +31,44 @@ class AuditOrchestrator:
                 self.nlp_analyzer.analyze,
                 article
             ),
-            self.vision_analyzer.analyze(article))
+            self.vision_analyzer.analyze(article)
+        )
 
-        final_report = self.report_manager.create_report(
+        structured_report = self.report_manager.create_report(
             article=article,
             nlp_report=nlp_report,
-            vision_report=vision_report )
+            vision_report=vision_report
+        )
 
-        agent_analysis = self._generate_agent_analysis(
-            final_report )
+        agent_analysis = await asyncio.to_thread(
+            self._generate_agent_analysis,
+            structured_report
+        )
 
-        final_report["agent_analysis"] = agent_analysis
+        structured_report["agent_analysis"] = agent_analysis
 
-        return final_report
+        return structured_report
+
+    def _load_system_prompt(self) -> str:
+        prompt_path = Path(__file__).parent / "system_prompt.md"
+
+        if not prompt_path.exists():
+            raise FileNotFoundError(
+                "system_prompt.md was not found."
+            )
+
+        return prompt_path.read_text(
+            encoding="utf-8"
+        )
 
     def _generate_agent_analysis(
         self,
-        report: dict) -> str:
+        report: dict
+    ) -> str:
         messages = [
             {
                 "role": "system",
-                "content": (
-                    "You are an AI inclusion auditor. "
-                    "Analyze structured NLP and computer "
-                    "vision audit results. "
-                    "Do not invent information. "
-                    "Explain the most important findings and "
-                    "provide practical inclusion recommendations."
-                )
+                "content": self.system_prompt
             },
             {
                 "role": "user",
@@ -68,8 +79,9 @@ class AuditOrchestrator:
                 )
             }
         ]
+
         response = self.client.chat.completions.create(
-            model="openai/gpt-oss-20b",
+            model=self.model,
             messages=messages,
             temperature=0.3,
             max_tokens=1500

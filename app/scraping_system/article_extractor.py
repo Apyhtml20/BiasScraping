@@ -1,8 +1,8 @@
 from typing import Optional
 from pydantic import BaseModel
 
-from scraping_system.image_extractor import extract_images
-from scraping_system.text_extractor import extract_paragraphs, extract_title
+from app.scraping_system.image_extractor import extract_images
+from app.scraping_system.text_extractor import extract_paragraphs, extract_title
 
 class ArticleImage(BaseModel):
  id: str

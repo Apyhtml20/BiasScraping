@@ -15,7 +15,7 @@ IMAGE_EXTENSIONS = (".jpg", ".jpeg", ".png", ".gif", ".webp", ".svg", ".avif")
 
 def extract_images(html: str, url: str):
     """Article images with alt/caption, excluding logos, icons, ads and other page chrome."""
-    from scraping_system.article_extractor import ArticleImage
+    from app.scraping_system.article_extractor import ArticleImage
 
     content_html = trafilatura.extract(
         html,

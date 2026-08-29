@@ -1,9 +1,10 @@
 """HTTP fetching and top-level entry point for the article scraping pipeline."""
+import asyncio
 import sys
 
 import httpx
 
-from scraping_system.article_extractor import Article, extract_article
+from app.scraping_system.article_extractor import Article, extract_article
 
 DEFAULT_HEADERS = {
     "User-Agent": (
@@ -26,6 +27,11 @@ def scrape(url: str) -> Article:
     """Fetch a news article URL and return its structured content."""
     html = fetch_html(url)
     return extract_article(html, url)
+
+
+class ArticleScraper:
+    async def scrape(self, url: str) -> Article:
+        return await asyncio.to_thread(scrape, url)
 
 
 if __name__ == "__main__":

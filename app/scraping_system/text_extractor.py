@@ -26,7 +26,7 @@ def extract_title(html: str, url: str) -> Optional[str]:
 
 def extract_paragraphs(html: str, url: str, title: Optional[str] = None):
     """Main article paragraphs, with navigation/ads/footers/related-content stripped out."""
-    from scraping_system.article_extractor import ArticleParagraph
+    from app.scraping_system.article_extractor import ArticleParagraph
 
     text = trafilatura.extract(
         html,
