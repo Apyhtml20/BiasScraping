@@ -1,29 +1,45 @@
-from scraping_system.scraper import scrape
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+
+from app.api.audit_router import router
 
 
-def main():
-    url = input("Enter article URL: ").strip()
-
-    article = scrape(url)
-
-    print("\nTITLE")
-    print(article.title)
-
-    print("\nPARAGRAPHS")
-    print(f"Total: {len(article.paragraphs)}")
-
-    for paragraph in article.paragraphs[:5]:
-        print(f"\n[{paragraph.id}]")
-        print(paragraph.text)
-
-    print("\nIMAGES")
-    print(f"Total: {len(article.images)}")
-
-    for image in article.images[:5]:
-        print(f"\n[{image.id}]")
-        print(image.url)
-        print("Alt:", image.alt)
+app = FastAPI(
+    title="AI for Inclusion API",
+    description=(
+        "Web scraping and AI-powered inclusion "
+        "and bias detection auditor."
+    ),
+    version="1.0.0"
+)
 
 
-if __name__ == "__main__":
-    main()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:4200"
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
+
+
+app.include_router(
+    router,
+    prefix="/api"
+)
+
+
+@app.get("/")
+async def root():
+    return {
+        "message": "AI for Inclusion API is running"
+    }
+
+
+@app.get("/health")
+async def health():
+    return {
+        "status": "healthy"
+    }
