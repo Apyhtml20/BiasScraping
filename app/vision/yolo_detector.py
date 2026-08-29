@@ -3,10 +3,10 @@ import numpy as np
 
 class YOLODetector:
     def __init__(self):
-        self.model = YOLO("yolo11n.pt")
+        self.model = YOLO("yolo11s.pt")
 
     def detect_people(self, image: np.ndarray) -> dict:
-        results = self.model(image, verbose=False)
+        results = self.model(image, verbose=False, conf=0.15, imgsz=960)
         people = []
 
         for result in results:
