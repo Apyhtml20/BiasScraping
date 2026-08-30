@@ -9,8 +9,9 @@ wheels/
 # Virtual environments
 .venv
 
-# Downloaded model weights (re-fetched on demand by ultralytics)
+# Downloaded model weights (re-fetched on demand by ultralytics / cv2)
 *.pt
+*.onnx
 
 # Environment variables (secrets) - keep .env.example tracked as a template
 .env
