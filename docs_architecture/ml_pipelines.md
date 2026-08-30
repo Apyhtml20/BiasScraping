@@ -52,12 +52,55 @@ Per image (`app/vision/analyzer.py`):
 
 The vision score for the article (`_calculate_score`) is
 `image_quality * 0.4 + (images_with_people / total_images * 100) * 0.6` — averaged across all
-analyzed images, then combined with the NLP score 40/60 for the overall `inclusivity_score`.
+analyzed images. This feeds into the overall `inclusivity_score` alongside the NLP score and
+the representation score below (see "Combining scores").
 
-**Known limitation:** the model only reports the *presence* of people, never demographic
-attributes — this is enforced deliberately (see `system_prompt.md`'s rules for the LLM step)
-since inferring gender/ethnicity/etc. from an image is out of scope and ethically risky for
-this tool.
+## Vision: perceived visual presentation (diversity & balance)
+
+Per image, in addition to person detection, `VisionAnalyzer` runs a second, opt-in-by-design
+pipeline over detected faces (`app/vision/analyzer.py::_analyze_faces`):
+
+1. **Face detection** (`FaceDetector`, `app/vision/face_detector.py`) — OpenCV's
+   `cv2.FaceDetectorYN` (YuNet), a small ONNX DNN model fetched on first use (like `ultralytics`'
+   `.pt` files, it isn't committed to the repo — see `.gitignore`). Replaces the legacy
+   `cv2.CascadeClassifier`, which is no longer exposed by the installed `opencv-python` (5.x)
+   build.
+2. **Presentation signal** (`PresentationSignalEstimator` + `PresentationModel`,
+   `app/vision/presentation_signal.py` / `presentation_model.py`) — crops each detected face
+   with a small margin and runs CLIP (`openai/clip-vit-base-patch32`, via
+   `transformers.pipeline("zero-shot-image-classification")`) as a zero-shot classifier against
+   three neutral prompts: feminine-presenting, masculine-presenting, androgynous/gender-neutral.
+   Below `CONFIDENCE_THRESHOLD` (0.6) the face is bucketed `undetermined` instead of forcing a
+   pick.
+3. **Aggregation** (`RepresentationAggregator`, `app/vision/representation_aggregator.py`) —
+   collects every face detected across the whole page into category counts/ratios, then computes:
+   - `diversity_index` — normalized Shannon entropy over all 4 categories (including
+     `undetermined`) — rewards multiple categories being present at all.
+   - `balance_index` — normalized Shannon entropy over the 3 identified categories only —
+     rewards an even split among faces that were confidently categorized.
+   - `representation_score` = `((diversity_index + balance_index) / 2) * 100`.
+
+   Below `MIN_FACES_FOR_SCORE` (3), these are all `None` (with a `note` explaining why) instead
+   of returning a misleading 0 — entropy on a single face is trivially zero and isn't a
+   meaningful diversity/balance signal.
+
+**What this deliberately does *not* do:** identify any specific, real person's actual sex or
+gender. Every "category" here is a coarse, low-confidence *visual presentation* signal
+(hairstyle/clothing/features as read by a general-purpose image-text model), always reported in
+aggregate at the page level, never attributed to a named or otherwise identifiable individual.
+The `representation` block in the vision report always carries a `disclaimer` field stating
+this, and `system_prompt.md` permits the LLM step to summarize the aggregated score but not to
+translate it into a claim about anyone's real identity.
+
+## Combining scores
+
+`InclusivityScorer` (`app/reports/scoring.py`) combines up to three component scores — `nlp`
+(weight 0.5), `vision` (0.25), `representation` (0.25) — via `build_breakdown`. When
+`representation_score` is `None` (no faces, or fewer than `MIN_FACES_FOR_SCORE`), that component
+is dropped and the remaining weights are renormalized rather than penalizing the page for having
+no analyzable faces. `explain_breakdown` turns the weighted contributions into the
+human-readable `score_explanation` list included in the final report, so every point of the
+`inclusivity_score` is traceable to a specific component, its raw score, and its weight.
 
 ## LLM narrative step
 
