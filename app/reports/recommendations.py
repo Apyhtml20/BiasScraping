@@ -14,6 +14,10 @@ class RecommendationEngine:
             self._vision_recommendations(vision_report)
         )
 
+        recommendations.extend(
+            self._representation_recommendations(vision_report)
+        )
+
         return recommendations
 
     def _nlp_recommendations(
@@ -76,6 +80,25 @@ class RecommendationEngine:
                 })
 
         return recommendations
+
+    def _representation_recommendations(
+        self,
+        vision_report: dict
+    ) -> list[dict]:
+        representation = vision_report.get("representation", {})
+        representation_score = representation.get("representation_score")
+
+        if representation_score is None or representation_score >= 40:
+            return []
+
+        return [{
+            "module": "representation",
+            "type": "low_representation_diversity",
+            "message": (
+                "Diversify the perceived visual presentation of people "
+                "shown in this page's images to improve balance."
+            )
+        }]
 
     def _get_nlp_recommendation(
         self,

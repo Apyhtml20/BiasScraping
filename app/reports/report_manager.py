@@ -1,8 +1,8 @@
 import uuid
 
-from app.scraping_system.article_extractor import Article
-from app.reports.scoring import InclusivityScorer
 from app.reports.recommendations import RecommendationEngine
+from app.reports.scoring import InclusivityScorer
+from app.scraping_system.article_extractor import Article
 
 
 class ReportManager:
@@ -18,10 +18,23 @@ class ReportManager:
     ) -> dict:
         nlp_score = nlp_report.get("score", 0)
         vision_score = vision_report.get("score", 0)
+        representation = vision_report.get("representation", {})
+        representation_score = representation.get("representation_score")
 
         overall_score = self.scorer.calculate_overall_score(
             nlp_score,
-            vision_score
+            vision_score,
+            representation_score
+        )
+
+        score_breakdown = self.scorer.build_breakdown(
+            nlp_score,
+            vision_score,
+            representation_score
+        )
+
+        score_explanation = self.scorer.explain_breakdown(
+            score_breakdown
         )
 
         recommendations = self.recommendation_engine.generate(
@@ -39,11 +52,15 @@ class ReportManager:
             "url": article.url,
             "title": article.title,
             "inclusivity_score": overall_score,
+            "score_breakdown": score_breakdown,
+            "score_explanation": score_explanation,
             "summary": {
                 "nlp_score": nlp_score,
                 "vision_score": vision_score,
+                "representation_score": representation_score,
                 "total_issues": len(issues)
             },
+            "representation": representation,
             "issues": issues,
             "recommendations": recommendations,
             "images": vision_report.get("images", []),
@@ -92,6 +109,23 @@ class ReportManager:
                 "severity": "medium",
                 "message": (
                     "Few article images contain visible people."
+                )
+            })
+
+        representation = vision_report.get("representation", {})
+        representation_score = representation.get("representation_score")
+
+        if (
+            representation_score is not None
+            and representation_score < 40
+        ):
+            issues.append({
+                "module": "representation",
+                "type": "low_representation_diversity",
+                "severity": "medium",
+                "message": (
+                    "The perceived visual presentation of people shown "
+                    "on this page lacks diversity or balance."
                 )
             })
 
