@@ -156,6 +156,26 @@
   opacity: 0.6;
 }
 
+.score-explanation {
+  margin-top: 0.75rem;
+  font-size: 0.78rem;
+}
+
+.score-explanation summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.score-explanation ul {
+  margin: 0.5rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--text-tertiary);
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
 @media (max-width: 640px) {
   .score-card {
     flex-direction: column;

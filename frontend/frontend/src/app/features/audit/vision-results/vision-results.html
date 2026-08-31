@@ -11,6 +11,37 @@
       {{ withPeopleCount() }} of {{ images().length }} analyzed images show visible people.
     </p>
 
+    @if (representation(); as rep) {
+      @if (rep.faces_detected > 0) {
+        <div class="representation-block">
+          <p class="representation-heading">
+            Perceived visual presentation
+            @if (rep.representation_score !== null) {
+              <span class="representation-score">{{ rep.representation_score }}/100 diversity &amp; balance</span>
+            }
+          </p>
+
+          <div class="category-bar">
+            @for (cat of presentationCategories(); track cat.label) {
+              <div class="category-segment" [style.width.%]="cat.percent" [attr.title]="cat.label + ': ' + cat.percent + '%'"></div>
+            }
+          </div>
+
+          <div class="category-legend">
+            @for (cat of presentationCategories(); track cat.label) {
+              <span>{{ cat.label }} {{ cat.percent }}%</span>
+            }
+          </div>
+
+          @if (rep.note) {
+            <p class="representation-note">{{ rep.note }}</p>
+          }
+
+          <p class="representation-disclaimer">{{ rep.disclaimer }}</p>
+        </div>
+      }
+    }
+
     <div class="image-grid">
       @for (image of images(); track image.image_id; let i = $index) {
         <figure class="image-card" [style.animation-delay.ms]="i * 45">

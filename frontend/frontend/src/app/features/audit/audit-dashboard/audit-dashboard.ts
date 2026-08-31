@@ -8,6 +8,7 @@ import { Recommendations } from '../recommendations/recommendations';
 import { ScoreCard } from '../score-card/score-card';
 import { UrlInput } from '../url-input/url-input';
 import { VisionResults } from '../vision-results/vision-results';
+import { WorldModelCard } from '../world-model/world-model';
 
 @Component({
   selector: 'app-audit-dashboard',
@@ -18,6 +19,7 @@ import { VisionResults } from '../vision-results/vision-results';
     NlpResults,
     VisionResults,
     Recommendations,
+    WorldModelCard,
     MarkdownPipe,
   ],
   templateUrl: './audit-dashboard.html',

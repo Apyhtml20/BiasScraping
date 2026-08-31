@@ -9,7 +9,7 @@
 
       <div class="results-grid">
         <app-nlp-results [issues]="report.issues" />
-        <app-vision-results [images]="report.images" />
+        <app-vision-results [images]="report.images" [representation]="report.representation" />
       </div>
 
       @if (report.agent_analysis) {
@@ -19,6 +19,10 @@
           </header>
           <div class="analysis-body" [innerHTML]="report.agent_analysis | markdown"></div>
         </section>
+      }
+
+      @if (report.world_model) {
+        <app-world-model [worldModel]="report.world_model" />
       }
 
       <app-recommendations [recommendations]="report.recommendations" />

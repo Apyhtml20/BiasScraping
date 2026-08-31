@@ -1,0 +1,63 @@
+@if (worldModel(); as wm) {
+  <section class="panel world-model-panel">
+    <header class="panel-header">
+      <h3>Next best action</h3>
+    </header>
+
+    <div class="action-highlight">
+      <span class="action-badge">{{ wm.recommended_action.name.replaceAll('_', ' ') }}</span>
+      <p class="action-description">{{ wm.recommended_action.description }}</p>
+      <p class="reward-line">
+        Expected overall improvement:
+        <strong [class.positive]="wm.expected_reward >= 0" [class.negative]="wm.expected_reward < 0">
+          {{ wm.expected_reward >= 0 ? '+' : '' }}{{ wm.expected_reward | number: '1.2-2' }}
+        </strong>
+      </p>
+    </div>
+
+    <div class="state-comparison">
+      @for (dim of dimensions; track dim.key) {
+        <div class="dim-row">
+          <span class="dim-label">{{ dim.label }}</span>
+          <div class="dim-bars">
+            <div class="dim-bar current" [style.width.%]="percent(wm.current_state[dim.key])"></div>
+            <div class="dim-bar predicted" [style.width.%]="percent(wm.predicted_future_state[dim.key])"></div>
+          </div>
+          <span
+            class="dim-delta"
+            [class.positive]="wm.improvement[dim.key] >= 0"
+            [class.negative]="wm.improvement[dim.key] < 0"
+          >
+            {{ wm.improvement[dim.key] >= 0 ? '+' : '' }}{{ wm.improvement[dim.key] * 100 | number: '1.0-1' }}
+          </span>
+        </div>
+      }
+    </div>
+
+    <div class="legend">
+      <span><i class="swatch current"></i>Current</span>
+      <span><i class="swatch predicted"></i>Predicted after action</span>
+    </div>
+
+    @if (otherRollouts().length > 0) {
+      <details class="alternatives">
+        <summary>Compare with the {{ otherRollouts().length }} other possible action{{ otherRollouts().length === 1 ? '' : 's' }}</summary>
+        <ul class="rollout-list">
+          @for (rollout of otherRollouts(); track rollout.action) {
+            <li>
+              <span class="rollout-name">{{ actionName(rollout.action) }}</span>
+              <span class="rollout-reward" [class.positive]="rollout.reward >= 0" [class.negative]="rollout.reward < 0">
+                {{ rollout.reward >= 0 ? '+' : '' }}{{ rollout.reward | number: '1.2-2' }}
+              </span>
+            </li>
+          }
+        </ul>
+      </details>
+    }
+
+    <p class="world-model-disclaimer">
+      Predictions come from a dynamics model trained on heuristic transitions, not observed
+      before/after edits — treat this as a relative priority order, not a guaranteed forecast.
+    </p>
+  </section>
+}

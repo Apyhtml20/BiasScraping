@@ -45,6 +45,17 @@
         <span class="dot" aria-hidden="true">·</span>
         <span>{{ r.metadata.images_analyzed }}/{{ r.metadata.images_found }} images analyzed</span>
       </div>
+
+      @if (r.score_explanation.length) {
+        <details class="score-explanation">
+          <summary>How this score was calculated</summary>
+          <ul>
+            @for (line of r.score_explanation; track line) {
+              <li>{{ line }}</li>
+            }
+          </ul>
+        </details>
+      }
     </div>
   </section>
 }
