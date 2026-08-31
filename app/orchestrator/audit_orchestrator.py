@@ -6,7 +6,9 @@ from app.nlp.analyzer import NLPAnalyzer
 from app.orchestrator.config import LLMConfig
 from app.reports.report_manager import ReportManager
 from app.scraping_system.scraper import ArticleScraper
+from app.services.analysis_for_results import run_world_model
 from app.vision.analyzer import VisionAnalyzer
+from app.world_model.state.state_logger import log_state
 
 
 class AuditOrchestrator:
@@ -40,12 +42,24 @@ class AuditOrchestrator:
             vision_report=vision_report
         )
 
-        agent_analysis = await asyncio.to_thread(
-            self._generate_agent_analysis,
-            structured_report
+        agent_analysis, world_model_report, _ = await asyncio.gather(
+            asyncio.to_thread(
+                self._generate_agent_analysis,
+                structured_report
+            ),
+            asyncio.to_thread(
+                run_world_model,
+                structured_report
+            ),
+            asyncio.to_thread(
+                log_state,
+                article.url,
+                structured_report
+            )
         )
 
         structured_report["agent_analysis"] = agent_analysis
+        structured_report["world_model"] = world_model_report
 
         return structured_report
 

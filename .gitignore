@@ -16,3 +16,9 @@ wheels/
 # Environment variables (secrets) - keep .env.example tracked as a template
 .env
 **/.env
+
+# Weights & Biases local run logs (offline mode)
+wandb/
+
+# Real states logged from production audits (grows over time, not code)
+data/world_model/
